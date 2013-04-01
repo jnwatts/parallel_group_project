@@ -9,11 +9,10 @@ public class PartitionSeq
 	static int s;
 
 	static Random prng;
-
 	static Boolean complete;
-	static LinkedList<int>[] current_solution;
 
-	static int[] numbers;
+	static int[] numbers; // Set of numbers to be partitioned
+	static int[] current_arrangement; // Each index corresponds to an index of the numbers array, the value represents the set in which the number is placed
 
 	public static void main(String[] args)
 	{
@@ -26,41 +25,43 @@ public class PartitionSeq
 		M = args[1];
 		s = args[2];
 
+		if (N > M) {
+			System.err.printf("N must be less than or equal to M\n");
+			return;
+		}
+
 		prng = Random.getInstance(s);
 
 		complete = false;
 
-		while (!complete) {
-			// Generate next solution
-			//TODO: How to easily generate all permutations without storing all of them?
-			{
-				// For now, generate a random solution
-				current_solution = new LinkedList<int>[M];
-				for (int i = 0; i < N; ++i) {
-					current_solution[prng.nextInt(M)].add(prng.nextInt(N));
-				}
-			}
+		numbers = new int[N];
+		current_arrangement = new int[N];
 
-			// Score solution
-			//TODO: Need strategy to determine score of solution
+		// Generate numbers to operate on and initialize first arrangement
+		for (int i = 0; i < N; ++i) {
+			numbers[i] = prng.nextInt(M);
+			current_arrangement[i] = 0;
+		}
+
+		while (!complete) {
+			// Generate next arrangement
+			//TODO: How to easily generate all permutations without storing all of them?
+
+			// Score arrangement
+			//TODO: Need strategy to determine score of arrangement
 			// Score = difference of min and max of partitions?
 			int[] scores = new int[M];
 			int min_index = 0;
 			int max_index = 0;
 			for (int i = 0; i < M; ++i) {
-				Iterator<int> iter = current_solution[i].iterator();
-				int score = 0;
-				while (iter.hasNext()) {
-					score += iter.next();
-				}
-				scores[i] = score;
+				scores[current_arrangement[i]] += numbers[i];
 				if (score < scores[min_index])
 					min_index = i;
 				if (score > scores[max_index])
 					max_index = i;
 			}
 
-			// Until solution generation is complete, just operate on a single solution
+			// Until arrangement generation is complete, just operate on a single arrangement
 			complete = true;
 		}
 	}
