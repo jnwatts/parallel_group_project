@@ -60,13 +60,13 @@ public class PartitionSeq
 			current_arrangement[i] = 0;
 		}
 		System.out.printf("numbers:\n");
-		dump_array(numbers);
+		System.out.println(" " + dump_array(numbers));
 		System.out.printf("possible arrangements: %d\n", num_arrangements);
 
 		while (arrangements_remaining > 0) {
 			if (debug) {
 				System.out.printf("arrangements_remaining #%d\n", arrangements_remaining);
-				dump_array(current_arrangement);
+				System.out.println(dump_array(current_arrangement));
 			}
 
 			// Score arrangement
@@ -104,7 +104,7 @@ public class PartitionSeq
 				}
 				if (debug) {
 					System.out.printf("sums #%d\n", arrangements_remaining);
-					dump_array(sums);
+					System.out.println(dump_array(sums));
 					System.out.printf("min: %d, max: %d\n", min_index, max_index);
 					System.out.printf("score: %d\n", score);
 					System.out.printf("-\n");
@@ -145,11 +145,15 @@ public class PartitionSeq
 		System.err.println("Usage: PartitionSeq <N numbers> <M partitions> <seed>");
 	}
 
-	public static void dump_array(int[] a) {
+	public static String dump_array(int[] a) {
+		String str = "[";
 		for (int i = 0; i < a.length; ++i) {
-			System.out.printf("%d,", a[i]);
+			str += String.format("%d", a[i]);
+			if (i < a.length - 1)
+				str += ",";
 		}
-		System.out.printf("\n");
+		str += "]";
+		return str;
 	}
 
 	public static String arrangement_toString(int[] arrangement) {
