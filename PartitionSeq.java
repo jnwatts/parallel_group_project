@@ -134,7 +134,7 @@ public class PartitionSeq
 		Iterator<int[]> iter = min_arrangements.iterator();
 		while (iter.hasNext()) {
 			int[] arrangement = iter.next();
-			System.out.println(arrangement_toString(arrangement));
+			System.out.println(" " + dump_array(arrangement) + " -> " + arrangement_toString(arrangement));
 		}
 		
 		long t1 = System.currentTimeMillis();
