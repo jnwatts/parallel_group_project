@@ -159,6 +159,16 @@ public class PartitionSmp
 
 		// find lowest min_score amoung threads
 		// print first arrangement from first thread matching min_score
+		int index = 0;
+		int result = Integer.MIN_VALUE;
+		
+		for( int i = 0; i < partition_results.size(); i++){
+			if(partition_results[i].min_score < result){
+				result = partition_results[i].min_score;
+				index = i;
+			}
+		}
+		arrangement_toString(partition_results[index].min_arrangements[0]);
 
 		if (debug) {
 			System.out.printf("\n");
