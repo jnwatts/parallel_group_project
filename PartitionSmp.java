@@ -3,6 +3,10 @@ import java.util.List;
 import java.util.LinkedList;
 import java.util.ArrayList;
 import java.util.Iterator;
+import edu.rit.pj.ParallelRegion;
+import edu.rit.pj.ParallelTeam;
+import edu.rit.pj.IntegerForLoop;
+import edu.rit.pj.Comm;
 import edu.rit.util.Random;
 
 public class PartitionSmp
