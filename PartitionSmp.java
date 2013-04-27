@@ -162,15 +162,19 @@ public class PartitionSmp
 		int num_of_min_arrangements = 0;
 		
 		for( int i = 0; i < partition_results.length; i++){
-			if(partition_results[i].min_score < result){
-				result = partition_results[i].min_score;
+			if (partition_results[i] != null) {
+				if(partition_results[i].min_score < result){
+					result = partition_results[i].min_score;
+				}
 			}
 		}
 		for( int i = 0; i < partition_results.length; i++){
-			if (partition_results[i].min_score == result) {
-				num_of_min_arrangements += partition_results[i].min_arrangements.size();
-				if (index < 0)
-					index = i;
+			if (partition_results[i] != null) {
+				if (partition_results[i].min_score == result) {
+					num_of_min_arrangements += partition_results[i].min_arrangements.size();
+					if (index < 0)
+						index = i;
+				}
 			}
 		}
 		System.out.printf("min_score: %d\n", result);
