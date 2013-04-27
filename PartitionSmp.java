@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import edu.rit.pj.ParallelRegion;
 import edu.rit.pj.ParallelTeam;
-import edu.rit.pj.IntegerForLoop;
+import edu.rit.pj.LongForLoop;
 import edu.rit.pj.Comm;
 import edu.rit.util.Random;
 
@@ -29,11 +29,13 @@ public class PartitionSmp
 	};
 
 	static PartitionResult[] partition_results;
+
+	static ParallelTeam pt;
     
-    private int[] startConfig(int iteration, int numVar, int numParts){
+    static private int[] startConfig(long iteration, int numVar, int numParts){
         int[] ret = new int[numVar];
         for(int i = 0; i < numVar; i ++){
-            ret[i] = (iteration/((i+1)*numParts))%numParts
+            ret[i] = (int)((iteration/((i+1)*numParts))%numParts);
         }
         return ret;
     }
@@ -58,44 +60,38 @@ public class PartitionSmp
 
 		prng = Random.getInstance(s);
 
+		pt = new ParallelTeam();
+
 		numbers = new int[N];
-		current_arrangement = new int[N];
 
 		num_arrangements = 1L;
 		for (int i = 0; i < N; ++i) {
 			num_arrangements *= M;
 		}
-		arrangements_remaining = num_arrangements;
-
-		min_score = Integer.MAX_VALUE;
-		min_arrangements = new LinkedList<int[]>();
 
 		// Generate numbers to operate on and initialize first arrangement
 		for (int i = 0; i < N; ++i) {
 			numbers[i] = prng.nextInt(N) - N/2;
-			current_arrangement[i] = 0;
 		}
 		System.out.printf("numbers:\n");
 		System.out.println(" " + dump_array(numbers));
 		System.out.printf("possible arrangements: %d\n", num_arrangements);
 
-		pt.execute(new PartitionRegion() {
-			PartitionRegion partition_result;
-
+		pt.execute(new ParallelRegion() {
 			public void run() throws Exception {
-				execute(0, num_arrangements - 1, new IntegerForLoop() {
-					public void start() {
+				execute(0, num_arrangements - 1, new LongForLoop() {
+					public void run(long first, long last) {
+						PartitionResult partition_result;
 						int thread_index = getThreadIndex();
 						partition_result = partition_results[thread_index];
-					}
-
-					public void run(int first, int last) {
+						partition_result.min_score = Integer.MAX_VALUE;
+						partition_result.min_arrangements = new LinkedList<int[]>();
 						int[] current_arrangement; // Each index corresponds to an index of the numbers array, the value represents the set in which the number is placed
 						current_arrangement = startConfig(first, N, M);
 
-						for (int i = first; i <= last; ++i) {
+						for (long a = first; a <= last; ++a) {
 							if (debug) {
-								System.out.printf("arrangement #%d\n", i);
+								System.out.printf("arrangement #%d\n", a);
 								System.out.println(dump_array(current_arrangement));
 							}
 
@@ -125,8 +121,8 @@ public class PartitionSmp
 								}
 								score = sums[max_index] - sums[min_index];
 
-								if (score <= min_score) {
-									if (score < min_score) {
+								if (score <= partition_result.min_score) {
+									if (score < partition_result.min_score) {
 										partition_result.min_arrangements.clear();
 										partition_result.min_score = score;
 									}
