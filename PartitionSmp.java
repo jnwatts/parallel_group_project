@@ -158,7 +158,7 @@ public class PartitionSmp
 		// find lowest min_score amoung threads
 		// print first arrangement from first thread matching min_score
 		int index = -1;
-		int result = Integer.MIN_VALUE;
+		int result = Integer.MAX_VALUE;
 		int num_of_min_arrangements = 0;
 		
 		for( int i = 0; i < partition_results.length; i++){
@@ -175,7 +175,7 @@ public class PartitionSmp
 		}
 		System.out.printf("min_score: %d\n", result);
 		System.out.printf("arrangements with this score: %d\n", num_of_min_arrangements);
-		arrangement_toString(partition_results[index].min_arrangements.getFirst());
+		System.out.println(arrangement_toString(partition_results[index].min_arrangements.getFirst()));
 
 		long t1 = System.currentTimeMillis();
 		System.out.printf("%d msecs\n", t1 - t0);
