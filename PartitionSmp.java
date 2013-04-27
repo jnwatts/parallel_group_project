@@ -35,7 +35,7 @@ public class PartitionSmp
     static private int[] startConfig(long iteration, int numVar, int numParts){
         int[] ret = new int[numVar];
         for(int i = 0; i < numVar; i ++){
-            ret[i] = (int)((iteration/((i+1)*numParts))%numParts);
+            ret[i] = (int)((iteration/(Math.pow(numParts, i)))%numParts);
         }
         return ret;
     }
