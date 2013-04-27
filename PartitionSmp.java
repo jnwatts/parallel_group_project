@@ -75,6 +75,33 @@ public class PartitionSmp
 		System.out.println(" " + dump_array(numbers));
 		System.out.printf("possible arrangements: %d\n", num_arrangements);
 
+		pt.execute(new PartitionRegion() {
+			PartitionRegion partition_result;
+
+			public void run() throws Exception {
+				execute(0, num_arrangements - 1, new IntegerForLoop() {
+					public void start() {
+						int thread_index = getThreadIndex();
+						partition_result = partition_results[thread_index];
+					}
+
+					public void run(int first, int last) {
+						int[] current_arrangement; // Each index corresponds to an index of the numbers array, the value represents the set in which the number is placed
+						current_arrangement = startConfig(first, N, M);
+
+						for (int i = first; i <= last; ++i) {
+							// score arrangement
+							
+							// generate next arrangement
+						}
+					}
+				});
+			}
+		});
+
+		// find lowest min_score amoung threads
+		// print first arrangement from first thread matching min_score
+
 		while (arrangements_remaining > 0) {
 			if (debug) {
 				System.out.printf("arrangements_remaining #%d\n", arrangements_remaining);
