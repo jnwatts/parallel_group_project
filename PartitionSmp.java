@@ -40,7 +40,7 @@ public class PartitionSmp
         return ret;
     }
 
-	public static void main(String[] args)
+	public static void main(String[] args) throws Exception
 	{
 		long t0 = System.currentTimeMillis();
 		
@@ -80,7 +80,7 @@ public class PartitionSmp
 		pt.execute(new ParallelRegion() {
 			public void run() throws Exception {
 				execute(0, num_arrangements - 1, new LongForLoop() {
-					public void run(long first, long last) {
+					public void run(long first, long last) throws Exception {
 						PartitionResult partition_result;
 						int thread_index = getThreadIndex();
 						partition_result = partition_results[thread_index];
@@ -155,30 +155,26 @@ public class PartitionSmp
 
 		// find lowest min_score amoung threads
 		// print first arrangement from first thread matching min_score
-		int index = 0;
+		int index = -1;
 		int result = Integer.MIN_VALUE;
+		int num_of_min_arrangements = 0;
 		
-		for( int i = 0; i < partition_results.size(); i++){
+		for( int i = 0; i < partition_results.length; i++){
 			if(partition_results[i].min_score < result){
 				result = partition_results[i].min_score;
-				index = i;
 			}
 		}
-		arrangement_toString(partition_results[index].min_arrangements[0]);
-
-		if (debug) {
-			System.out.printf("\n");
+		for( int i = 0; i < partition_results.length; i++){
+			if (partition_results[i].min_score == result) {
+				num_of_min_arrangements += partition_results[i].min_arrangements.size();
+				if (index < 0)
+					index = i;
+			}
 		}
+		System.out.printf("min_score: %d\n", result);
+		System.out.printf("arrangements with this score: %d\n", num_of_min_arrangements);
+		arrangement_toString(partition_results[index].min_arrangements.getFirst());
 
-		System.out.printf("min_score: %d\n", min_score);
-		System.out.printf("arrangements with this score: %d\n", min_arrangements.size());
-		//TODO: Sort arrangements and print only the top one
-		Iterator<int[]> iter = min_arrangements.iterator();
-		while (iter.hasNext()) {
-			int[] arrangement = iter.next();
-			System.out.println(" " + dump_array(arrangement) + " -> " + arrangement_toString(arrangement));
-		}
-		
 		long t1 = System.currentTimeMillis();
 		System.out.printf("%d msecs\n", t1 - t0);
 	}
