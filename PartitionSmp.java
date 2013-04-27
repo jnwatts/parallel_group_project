@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import edu.rit.util.Random;
 
-public class PartitionSeq
+public class PartitionSmp
 {
 	static int N;
 	static int M;
