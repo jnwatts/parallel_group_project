@@ -25,6 +25,14 @@ public class PartitionSmp
 	};
 
 	static PartitionResult[] partition_results;
+    
+    private int[] startConfig(int iteration, int numVar, int numParts){
+        int[] ret = new int[numVar];
+        for(int i = 0; i < numVar; i ++){
+            ret[i] = (iteration/((i+1)*numParts))%numParts
+        }
+        return ret;
+    }
 
 	public static void main(String[] args)
 	{
