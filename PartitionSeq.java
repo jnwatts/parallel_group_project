@@ -128,15 +128,10 @@ public class PartitionSeq
 			System.out.printf("\n");
 		}
 
+		//TODO: Sort arrangements and print only the top one
 		System.out.printf("min_score: %d\n", min_score);
 		System.out.printf("arrangements with this score: %d\n", min_arrangements.size());
-		//TODO: Sort arrangements and print only the top one
-		Iterator<int[]> iter = min_arrangements.iterator();
-		while (iter.hasNext()) {
-			int[] arrangement = iter.next();
-			System.out.println(" " + dump_array(arrangement) + " -> " + arrangement_toString(arrangement));
-		}
-		
+        System.out.println(arrangement_toString(min_arrangements.getFirst()));
 		long t1 = System.currentTimeMillis();
 		System.out.printf("%d msecs\n", t1 - t0);
 	}
