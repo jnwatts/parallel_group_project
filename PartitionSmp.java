@@ -23,7 +23,7 @@ public class PartitionSmp
 	static long num_arrangements;
 	static long arrangements_remaining;
 	
-	class PartitionResult {
+	static private class PartitionResult {
 		int min_score;
 		LinkedList<int[]> min_arrangements;
 	};
@@ -79,11 +79,13 @@ public class PartitionSmp
 
 		pt.execute(new ParallelRegion() {
 			public void run() throws Exception {
+				partition_results = new PartitionResult[getThreadCount()];
+
 				execute(0, num_arrangements - 1, new LongForLoop() {
 					public void run(long first, long last) throws Exception {
 						PartitionResult partition_result;
 						int thread_index = getThreadIndex();
-						partition_result = partition_results[thread_index];
+						partition_results[thread_index] = partition_result = new PartitionResult();
 						partition_result.min_score = Integer.MAX_VALUE;
 						partition_result.min_arrangements = new LinkedList<int[]>();
 						int[] current_arrangement; // Each index corresponds to an index of the numbers array, the value represents the set in which the number is placed
