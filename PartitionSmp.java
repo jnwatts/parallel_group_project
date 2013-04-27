@@ -90,9 +90,63 @@ public class PartitionSmp
 						current_arrangement = startConfig(first, N, M);
 
 						for (int i = first; i <= last; ++i) {
+							if (debug) {
+								System.out.printf("arrangement #%d\n", i);
+								System.out.println(dump_array(current_arrangement));
+							}
+
 							// score arrangement
+							{
+								int[] sums = new int[M];
+								int score;
+								int min_index = 0;
+								int max_index = 0;
+								int min_sum = Integer.MAX_VALUE;
+								int max_sum = Integer.MIN_VALUE;
+								for (int i = 0; i < N; ++i) {
+									int index = current_arrangement[i];
+									int num = numbers[i];
+									sums[index] += num;
+								}
+								for (int i = 0; i < M; ++i) {
+									int sum = sums[i];
+									if (sum < min_sum) {
+										min_index = i;
+										min_sum = sum;
+									}
+									if (sum > max_sum) {
+										max_index = i;
+										max_sum = sum;
+									}
+								}
+								score = sums[max_index] - sums[min_index];
+
+								if (score <= min_score) {
+									if (score < min_score) {
+										partition_result.min_arrangements.clear();
+										partition_result.min_score = score;
+									}
+									partition_result.min_arrangements.add((int[])current_arrangement.clone());
+								}
+								if (debug) {
+									System.out.printf("sums #%d\n", arrangements_remaining);
+									System.out.println(dump_array(sums));
+									System.out.printf("min: %d, max: %d\n", min_index, max_index);
+									System.out.printf("score: %d\n", score);
+									System.out.printf("-\n");
+								}
+							}
+
 							
 							// generate next arrangement
+							for (int i = 0; i < N; ++i) {
+								current_arrangement[i]++;
+								if (current_arrangement[i] < M) {
+									break;
+								} else {
+									current_arrangement[i] = 0;
+								}
+							}
 						}
 					}
 				});
@@ -101,67 +155,6 @@ public class PartitionSmp
 
 		// find lowest min_score amoung threads
 		// print first arrangement from first thread matching min_score
-
-		while (arrangements_remaining > 0) {
-			if (debug) {
-				System.out.printf("arrangements_remaining #%d\n", arrangements_remaining);
-				System.out.println(dump_array(current_arrangement));
-			}
-
-			// Score arrangement
-			{
-				int[] sums = new int[M];
-				int score;
-				int min_index = 0;
-				int max_index = 0;
-				int min_sum = Integer.MAX_VALUE;
-				int max_sum = Integer.MIN_VALUE;
-				for (int i = 0; i < N; ++i) {
-					int index = current_arrangement[i];
-					int num = numbers[i];
-					sums[index] += num;
-				}
-				for (int i = 0; i < M; ++i) {
-					int sum = sums[i];
-					if (sum < min_sum) {
-						min_index = i;
-						min_sum = sum;
-					}
-					if (sum > max_sum) {
-						max_index = i;
-						max_sum = sum;
-					}
-				}
-				score = sums[max_index] - sums[min_index];
-
-				if (score <= min_score) {
-					if (score < min_score) {
-						min_arrangements.clear();
-						min_score = score;
-					}
-					min_arrangements.add((int[])current_arrangement.clone());
-				}
-				if (debug) {
-					System.out.printf("sums #%d\n", arrangements_remaining);
-					System.out.println(dump_array(sums));
-					System.out.printf("min: %d, max: %d\n", min_index, max_index);
-					System.out.printf("score: %d\n", score);
-					System.out.printf("-\n");
-				}
-			}
-
-			// Generate next arrangement
-			for (int i = 0; i < N; ++i) {
-				current_arrangement[i]++;
-				if (current_arrangement[i] < M) {
-					break;
-				} else {
-					current_arrangement[i] = 0;
-				}
-			}
-
-			--arrangements_remaining;
-		}
 
 		if (debug) {
 			System.out.printf("\n");
